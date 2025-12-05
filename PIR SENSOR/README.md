@@ -10,13 +10,13 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 **Objectif :** Test simple du capteur BS-612 qui contrôle l'état d'une led.  
 
 - Configuration des pins du matérielle
- - Le capteur PIR BS-612 est configuré comme une entrée sur le GPIO13.
- - La led est configuré comme sortie sur le pin GPIO4.
+  - Le capteur PIR BS-612 est configuré comme une entrée sur le GPIO13.
+  - La led est configuré comme sortie sur le pin GPIO4.
 - Lecture de l'état du capteur
- - Il y a une surveillance continue de l'état logique du capteur PIR.
- - Lorsqu'il y a une détection d'un front montant, le capteur se met en état HIGH.
+  - Il y a une surveillance continue de l'état logique du capteur PIR.
+  - Lorsqu'il y a une détection d'un front montant, le capteur se met en état HIGH.
 - Activation de la LED
- -      
+  -      
 
 
 
@@ -29,4 +29,5 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 
 ## Patch #6
 **Objectif :** Test simple du capteur BS-612 qui contrôle l'état d'une led.  
+
 
