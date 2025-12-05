@@ -18,13 +18,11 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 - Activation de la LED
   - La led s'allume lors de la détection
   - Grâce au compteur millis(), le programme peut vérifier si la led est allumée depuis 5000ms.
-  - Message sur le terminal via serial.println( " LED allumee ! ")
 - Gestion de la temporisation
   - Comptage jusqu'à 5000ms avant que la led s'éteint.
   - Utilisation d'un flag (ledActive) pour éviter des déclenchements répétés.
 - Coupure automatique de la led
-  - La led s'éteint.
-  - Message sur le terminal via serial.println( " LED éteint ! ").     
+  - La led s'éteint.   
 
 
 
@@ -39,22 +37,21 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
   - Lorsqu'il y a une détection d'un front montant, le capteur se met en état HIGH.
 - Démarrage du chronomètre sur détection
   - Quand un mouvement est capté, pour la première fois:
-      - motionDetected = true
-      - motionStartTime = millis(), il y a un enregistrement du moment du début du mouvement.
-      - Serial.println("Mouvement detecte, debut des 5 secondes...");
+    - motionDetected = true
+    - motionStartTime = millis(), il y a un enregistrement du moment du début du mouvement.
 - Vérification de la durée du mouvement
   - Si le mouvement continue est égale ou dépasse 5 secondes alors:
     - La led s'allume.
     - Un message est envoyé sur le terminal:
-      - Serial.println("LED est allumee (Après 5 secondes de mouvement) !");
 - Réinitialisation si pas de mouvement
   - motionDeected = false
   - si la led est allumée, et il n'y a plus de mouvement continue: la led s'éteint.
-  - Un message est envoyé sur le terminal:
-    - Serial.println("LED s'éteint");       
+
+         
 
 ## Patch #6
 **Objectif :** Test simple du capteur BS-612 qui contrôle l'état d'une led.  
+
 
 
 
