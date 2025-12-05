@@ -1,7 +1,7 @@
 #include "M5TimerCAM.h"
 
 const int LED_PIN = 4;      // LED externe sur GPIO4
-const int sensor_PIN = 13;  // Capteur Pir 5578 BS-162 sur GPIO13
+const int sensor_PIN = 13;  // Capteur Pir 5578 BS-612 sur GPIO13
 
 void setup() {
     // Configurer le bouton comme entrée avec pull-up
