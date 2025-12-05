@@ -1,4 +1,4 @@
-const int sensorPin = 13;   // Capteur Pir 5578 BS-162 
+const int sensorPin = 13;   // Capteur Pir 5578 BS-612 
 const int ledPin = 4;       // LED
 
 unsigned long motionStartTime = 0;
@@ -8,7 +8,7 @@ bool ledActive = false;
 void setup() {
   Serial.begin(9600);
 
-  pinMode(sensorPin, INPUT);   //Capteur Pir 5578 BS-162 configurée comme entrée
+  pinMode(sensorPin, INPUT);   //Capteur Pir 5578 BS-612 configurée comme entrée
   pinMode(ledPin, OUTPUT);     //Led configurée comme sortie
   digitalWrite(ledPin, LOW);  //Led initialisé en état low (éteint) 
 }
