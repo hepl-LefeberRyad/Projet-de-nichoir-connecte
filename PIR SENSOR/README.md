@@ -16,9 +16,15 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
   - Il y a une surveillance continue de l'état logique du capteur PIR.
   - Lorsqu'il y a une détection d'un front montant, le capteur se met en état HIGH.
 - Activation de la LED
-  -      
-
-
+  - La led s'allume lors de la détection
+  - Grâce au compteur millis(), le programme peut vérifier si la led est allumée depuis 5000ms.
+  - Message sur le terminal via serial.println( " LED allumee ! ")
+- Gestion de la temporisation
+  - Comptage jusqu'à 5000ms avant que la led s'éteint.
+  - Utilisation d'un flag (ledActive) pour éviter des déclenchements répétés.
+- Coupure automatique de la led
+  - La led s'éteint.
+  - Message sur le terminal via serial.println( " LED éteint ! ").     
 
 
 
@@ -29,5 +35,6 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 
 ## Patch #6
 **Objectif :** Test simple du capteur BS-612 qui contrôle l'état d'une led.  
+
 
 
