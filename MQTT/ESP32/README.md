@@ -35,17 +35,18 @@ Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouveme
 
 - Détection de mouvement
   - La logique du PIR fonctionne en trois phases :
-    1- Détection du front montant
+    
+     1 - Détection du front montant
         - Passage LOW à HIGH
         - Début de la temporisation : motionStart = millis()
         - Le flag photoTaken = false réactive la prise de photo
 
-    2- Maintien du mouvement
+     2 - Maintien du mouvement
         - On attend 10 secondes de mouvement continu
         - Condition : millis() - motionStart >= 10000
         - Une fois la durée atteinte → capture d'une photo
 
-    3- Fin du mouvement
+     3 - Fin du mouvement
         - Passage HIGH à LOW
         - Reset de l’état du capteur
 
