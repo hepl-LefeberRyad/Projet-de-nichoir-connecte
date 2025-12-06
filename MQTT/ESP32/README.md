@@ -75,9 +75,7 @@ Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une 
   - Port série actif pour le debug
 
 - Détection de mouvement 
-
   - Le PIR pilote l’ensemble du fonctionnement à travers trois phases :
-
     1- Début du mouvement
         - Passage de LOW à HIGH.
         - Enregistrement du temps de début.
@@ -85,7 +83,6 @@ Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une 
 
     2- Mouvement continu pendant 10 secondes
         - Si le PIR reste HIGH pendant 10 secondes il y a un déclenchement de la capture.
-    
         - Le système sait que le mouvement est réel et persistant.
 
     3- Fin du mouvement
