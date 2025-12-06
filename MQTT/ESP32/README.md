@@ -11,12 +11,6 @@ L'échange de données s'effectue sur le réseau local, via l'adresse IP du brok
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée.  
 Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouvement dure au moins 10 secondes, capturer une photo avec la TimerCAM et l’envoyer vers un broker MQTT en morceaux (chunks) encodés en Base64.
 
--
-
-
-## Patch 8#
-**Objectif :** .  
-
 - Configuration matérielle
  - Capteur PIR connecté sur la pin 13
  - Lecture en numérique : HIGH = mouvement détecté
@@ -61,6 +55,12 @@ Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouveme
   - Encodage en Base64 pour compatibilité MQTT
   - Transmission séquentielle de tous les chunks
   - Libération de la mémoire caméra
+
+
+## Patch 8#
+**Objectif :** .  
+
+
 
 ## Patch 9#
 **Objectif :** .  
