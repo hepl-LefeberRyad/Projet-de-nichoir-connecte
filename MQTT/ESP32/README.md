@@ -7,7 +7,19 @@ L'échange de données s'effectue sur le réseau local, via l'adresse IP du brok
 
 ---
 
-## Patch #
+## Patch 7#
+**Objectif :** .  
+
+- 
+
+
+## Patch 8#
+**Objectif :** .  
+
+-
+
+
+## Patch 9#
 **Objectif :** .  
 
 - 
