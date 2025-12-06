@@ -12,11 +12,11 @@ L'échange de données s'effectue sur le réseau local, via l'adresse IP du brok
 Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouvement dure au moins 10 secondes, capturer une photo avec la TimerCAM et l’envoyer vers un broker MQTT en morceaux (chunks) encodés en Base64.
 
 - Configuration matérielle
- - Capteur PIR connecté sur la pin 13
- - Lecture en numérique : HIGH = mouvement détecté
- - TimerCAM initialisée en mode caméra JPEG
- - Résolution configurée en XGA 
- - Orientation verticale inversée via set_vflip(1)
+  - Capteur PIR connecté sur la pin 13
+  - Lecture en numérique : HIGH = mouvement détecté
+  - TimerCAM initialisée en mode caméra JPEG
+  - Résolution configurée en XGA 
+  - Orientation verticale inversée via set_vflip(1)
 
 - Connexion WiFi
   - Connexion au réseau WiFi défini dans les macros WIFI_SSID et WIFI_PASSWORD
