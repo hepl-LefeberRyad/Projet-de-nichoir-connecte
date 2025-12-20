@@ -1,82 +1,104 @@
-from flask import Flask, render_template  # Import Flask framework et fonction render_template pour afficher les templates HTML
-import mariadb                           # Import pour interagir avec la base de données MariaDB
-import base64                            # Import pour encoder les images en Base64
-import threading                         # Import pour gérer les threads (MQTT en arrière-plan)
-import paho.mqtt.client as mqtt          # Import pour gérer la communication MQTT
+# -*- coding: utf-8 -*-
+from flask import Flask, render_template  # Import de Flask pour le serveur web et le rendu de templates HTML
+import mariadb                             # Import de MariaDB pour se connecter à la base de données
+import base64                              # Import pour encoder/décoder les images en base64
+import threading                            # Import pour exécuter le client MQTT dans un thread séparé
+import paho.mqtt.client as mqtt             # Import du client MQTT
+from datetime import datetime               # Import pour manipuler les dates et heures
+import time                                 # Import pour utiliser sleep
 
-app = Flask(__name__)  # Création de l'application Flask
+# Initialisation de l'application Flask
+app = Flask(__name__)
 
 # -------------------- DATABASE --------------------
-DB_USER = "user"        # Nom d'utilisateur MariaDB
-DB_PASS = "2001"        # Mot de passe MariaDB
-DB_HOST = "localhost"   # Hôte de la base de données
-DB_NAME = "IMAGE"       # Nom de la base de données
-TABLE_NAME = "images"   # Nom de la table contenant les images
+# Paramètres de connexion à la base de données MariaDB
+DB_USER = "user"
+DB_PASS = "2001"
+DB_HOST = "localhost"
+DB_NAME = "IMAGE"
+TABLE_NAME = "images"
 
 # -------------------- MQTT --------------------
-MQTT_BROKER = "192.168.0.194"  # Adresse IP du broker MQTT
-MQTT_PORT = 1883                # Port MQTT
-MQTT_TOPIC_PIC = "pics"        # Topic MQTT pour les images
+# Paramètres de connexion au broker MQTT
+MQTT_BROKER = "192.168.0.194"
+MQTT_PORT = 1883
+MQTT_TOPIC_BATTERY = "battery"  # Topic pour les données batterie
+
+# Stockage des dernières informations de batterie reçues
+battery_info = {
+    "voltage": None,    # Tension en volts
+    "capacity": None,   # Pourcentage de batterie
+    "timestamp": None   # Date et heure de la dernière mise à jour
+}
 
 # -------------------- FUNCTIONS --------------------
 def get_images():
-    # Connexion à la base de données
-    conn = mariadb.connect(user=DB_USER, password=DB_PASS, host=DB_HOST, database=DB_NAME)
-    cur = conn.cursor()  # Création d'un curseur pour exécuter les requêtes
-    # Récupération des images stockées dans la base, triées par ID décroissant (les plus récentes en premier)
-    cur.execute(f"SELECT id, topic, payload, timestamp FROM {TABLE_NAME} ORDER BY id DESC")
-    rows = []  # Liste qui contiendra les images formatées
-    for id, topic, payload, timestamp in cur.fetchall():  # Parcours de chaque ligne renvoyée par la requête
-        img_b64 = base64.b64encode(payload).decode()  # Conversion de l'image (bytes) en chaîne Base64
+    """Récupère toutes les images depuis MariaDB et les convertit en base64 pour l'affichage dans HTML"""
+    conn = mariadb.connect(user=DB_USER, password=DB_PASS, host=DB_HOST, database=DB_NAME)  # Connexion DB
+    cur = conn.cursor()  # Création d'un curseur
+    cur.execute(f"SELECT id, topic, payload, timestamp FROM {TABLE_NAME} ORDER BY id DESC")  # Requête pour récupérer les images
+    rows = []
+    for id, topic, payload, timestamp in cur.fetchall():  # Parcours des résultats
+        img_b64 = base64.b64encode(payload).decode()      # Convertit les bytes de l'image en string base64
         rows.append({
-            "id": id,               # ID de l'image dans la base
-            "topic": topic,         # Topic MQTT de l'image
-            "timestamp": timestamp, # Timestamp d'insertion
-            "img_b64": img_b64      # Contenu de l'image encodé en Base64
+            "id": id,
+            "topic": topic,
+            "timestamp": timestamp,
+            "img_b64": img_b64
         })
-    cur.close()  # Fermeture du curseur
-    conn.close() # Fermeture de la connexion à la base
-    return rows  # Renvoie la liste des images
+    cur.close()   # Fermeture du curseur
+    conn.close()  # Fermeture de la connexion
+    return rows   # Retourne la liste des images avec infos
 
 # -------------------- MQTT CALLBACKS --------------------
 def on_connect(client, userdata, flags, rc):
-    # Appelé lorsque le client MQTT se connecte au broker
+    """Callback exécuté lors de la connexion au broker MQTT"""
     if rc == 0:
-        print("Connected to MQTT broker")  # Affiche la connexion réussie
-        client.subscribe(MQTT_TOPIC_PIC)   # Abonne le client au topic des images
+        print("Connected to MQTT broker")
+        client.subscribe(MQTT_TOPIC_BATTERY)  # S'abonne au topic batterie
     else:
-        print(f"Failed to connect (rc={rc})")  # Affiche un message d'erreur si la connexion échoue
+        print(f"Failed to connect (rc={rc})")  # Affiche un message en cas d'erreur
 
 def on_message(client, userdata, msg):
-    # Appelé lorsqu'un message MQTT est reçu
-    # Pour cette version simplifiée, on ne fait rien avec les messages
-    pass
+    """Callback exécuté à la réception d'un message MQTT"""
+    global battery_info
+    try:
+        payload = msg.payload.decode().strip()  # Decode le message reçu
+        # Attendu: format "niveau,voltage" par ex. "85,3700"
+        if "," in payload:
+            level_str, voltage_str = payload.split(",")      # Sépare niveau et voltage
+            battery_info["capacity"] = int(level_str)       # Stocke le niveau de batterie
+            battery_info["voltage"] = int(voltage_str) / 1000.0  # Convertit mV en V
+            battery_info["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Stocke la date de réception
+            print(f"[DEBUG] Updated battery info: {battery_info}")  # Debug
+    except Exception as e:
+        print(f"[ERROR] Parsing battery message '{payload}': {e}")  # Affiche les erreurs
 
 def mqtt_thread():
-    # Thread en arrière-plan pour maintenir la connexion MQTT
-    client = mqtt.Client()           # Création du client MQTT
-    client.on_connect = on_connect   # Définition du callback de connexion
-    client.on_message = on_message   # Définition du callback de réception de messages
-    while True:                      # Boucle infinie pour garder la connexion
+    """Exécute le client MQTT dans un thread séparé pour ne pas bloquer Flask"""
+    client = mqtt.Client()           # Création d'un client MQTT
+    client.on_connect = on_connect   # Définit la fonction de callback connect
+    client.on_message = on_message   # Définit la fonction de callback message
+    while True:
         try:
-            client.connect(MQTT_BROKER, MQTT_PORT, keepalive=60)  # Connexion au broker MQTT
-            client.loop_forever()  # Boucle d'attente et traitement des messages MQTT
-        except Exception as e:  # Si erreur de connexion ou autre
-            print(f"MQTT error: {e}, reconnecting in 5 seconds...")  # Affiche l'erreur
-            import time
-            time.sleep(5)  # Attente avant de réessayer la connexion
+            client.connect(MQTT_BROKER, MQTT_PORT, keepalive=60)  # Connexion au broker
+            client.loop_forever()  # Boucle infinie pour recevoir les messages
+        except Exception as e:
+            print(f"MQTT error: {e}, reconnecting in 5 seconds...")  # Affiche les erreurs
+            time.sleep(5)  # Attend 5 secondes avant de retenter
 
 # -------------------- FLASK ROUTES --------------------
-@app.route("/")  # Définition de la route principale de l'application
+@app.route("/")
 def index():
-    images = get_images()  # Récupère la liste des images depuis la base
-    return render_template("index_pics.html", images=images)  # Affiche le template HTML avec les images
+    """Route principale, affiche la page HTML avec images et batterie"""
+    images = get_images()  # Récupère les images depuis la DB
+    return render_template("index_pics.html", images=images, battery=battery_info)  # Passe les données au template
 
 # -------------------- MAIN --------------------
 if __name__ == "__main__":
-    # Démarrage du thread MQTT en arrière-plan
+    # Démarre le listener MQTT dans un thread en arrière-plan
     thread = threading.Thread(target=mqtt_thread, daemon=True)
     thread.start()
 
-    # Démarrage du serveur Flask
+    # Démarre le serveur Flask
     app.run(host="0.0.0.0", port=5001, debug=True)
