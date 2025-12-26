@@ -92,7 +92,7 @@ Le tout avec une fenêtre PIR de 10 minutes limitant le nombre d’activations �
 2. Gestion du réveil PIR
 Lors d’un réveil par le capteur PIR :
     • 	Vérification de la fenêtre PIR de 10 minutes :
-    • 	Si première activation ou fenêtre expirée: remise à zéro, déboute une nouvelle   fenêtre
+    • 	Si première activation ou fenêtre expirée: remise à zéro, déboute une nouvelle fenêtre
     • 	Limitation à 2 déclenchements de la LED.
     • 	La LED s'allumée pendant 10 secondes
     • 	Sinon la LED est ignorée quand la limite est atteinte
@@ -181,7 +181,7 @@ Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouveme
          
        - Condition : millis() - motionStart >= 10000
          
-       - Une fois la durée atteinte → capture d'une photo
+       - Une fois la durée atteinte une photo est capturée
 
     3 - Fin du mouvement
        - Passage HIGH à LOW
@@ -343,7 +343,7 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
    - Sinon : retour immédiat en veille
   Une limite de 2 photos par fenêtre de 10 minutes est imposée via :
    - window_start (timestamp RTC)
-   - pir_count (compteur de photos max. 2 photos dans la fenêtre)
+   - pir_count => compteur de photos max. 2 photos par fenêtre de temps
 
 3. Capture et envoi de la photo
 
