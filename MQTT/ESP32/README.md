@@ -188,7 +188,7 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
 
 ## Patch 10# – Détection prolongée + Photo avec MQTT + Timers RTC
 **Objectif :** Détecter un mouvement continu pendant 10 secondes, capturer une photo, l’envoyer en blocs via MQTT, puis remettre la TimerCAM en deep sleep avec double réveil :
-- PIR (EXT0) pour les photos
+- Capteur PIR (EXT0) pour prendre les photos
 - Timer RTC pour l’envoi périodique du niveau de batterie.
 Ce patch combine détection fiable, transmission optimisée, et gestion d’énergie avancée.
 
@@ -231,17 +231,12 @@ Ce réveil n’interfère pas avec la logique PIR.
 
 5. Gestion des timers RTC 
 a) Réveil toutes les 60 secondes pour envoyer l’état batterie.
-
 #define PERIOD_US (60ULL * 1000000ULL)
-
 
 b) WINDOW_US – Fenêtre PIR de 10 minutes
 Limite de 2 photos par fenêtre de 10 minutes.
 Si la fenêtre expire, pir_count est remis à zéro. 
-
 #define WINDOW_US (10ULL * 60ULL * 1000000ULL)
-
-
 
 c) next_wakeup – Synchronisation continue
 Stocké en RTC_DATA_ATTR, donc conservé en deep sleep.
@@ -253,6 +248,7 @@ Logique :
 Le réveil batterie reste parfaitement synchronisé, même si plusieurs réveils PIR interviennent entre-temps.
 
 6. Mise en veille et réveils
+   
 Avant de dormir :
 - Activation du réveil PIR :
 esp_sleep_enable_ext0_wakeup(SENSOR_PIN, 1)
