@@ -186,10 +186,10 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
       - Une transmission réseau efficace
       - Une consommation d’énergie minimale grâce à la veille profonde
 
-## Patch 10# – Détection prolongée + Photo avec MQTT + Timers RTC
+## Patch 10# 
 **Objectif :** Détecter un mouvement continu pendant 10 secondes, capturer une photo, l’envoyer en blocs via MQTT, puis remettre la TimerCAM en deep sleep avec double réveil :
-- Capteur PIR (EXT0) pour prendre les photos
-- Timer RTC pour l’envoi périodique du niveau de batterie.
+- Par capteur PIR (EXT0) pour prendre les photos
+- Par timer RTC pour l’envoi périodique du niveau de batterie.
 Ce patch combine détection fiable, transmission optimisée, et gestion d’énergie avancée.
 
 1. Configuration matérielle
