@@ -7,7 +7,7 @@ L'échange de données s'effectue sur le réseau local, via l'adresse IP du brok
 
 ---
 
-## Patch 7##
+## Patch 7#
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée.  
 Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouvement dure au moins 10 secondes, capturer une photo avec la TimerCAM et l’envoyer vers un broker MQTT en morceaux (chunks) encodés en Base64.
 
@@ -63,7 +63,7 @@ Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouveme
   - Libération de la mémoire caméra
 
 
-## Patch 8##
+## Patch 8#
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée avec une mise en veille.  
 Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une photo via MQTT, puis repasser l’ESP32 TimerCAM en mode veille profonde avec réveil par le capteur PIR.
 
@@ -124,7 +124,7 @@ Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une 
       - Réveil automatique dès qu’un nouveau mouvement est détecté.
 
 
-## Patch 9##
+## Patch 9#
 **Objectif :** Envoi d'une photo MQTT avec flash après détection de mouvement prolongée avec une mise en veille .  
 Détecter un mouvement continu durant 10 secondes, signaler la prise de photo via une LED externe, envoyer l’image en plusieurs blocs sur MQTT, puis repasser l’ESP32 TimerCAM en mode veille profonde avec réveil via le PIR.
 
@@ -261,7 +261,7 @@ Ce fonctionnement assure :
 - Économie d’énergie maximale
 
 
-## Patch 11## 
+## Patch 11#
 **Objectif** L’objectif est de faire fonctionner la TimerCAM en ultra basse consommation en combinant trois fonctions totalement indépendantes : la prise de photo uniquement lorsqu’un mouvement est validé par le capteur PIR, l’envoi périodique de l’état de la batterie via MQTT, et un mode deep sleep optimisé utilisant deux sources de réveil — le PIR pour les photos et le timer RTC pour les transmissions programmées.
 
 1. Matériel et configuration
