@@ -120,20 +120,20 @@ il sert uniquement à maintenir la synchronisation du timer permanent.
   - Éviter toute dérive, même après plusieurs réveils PIR
  
  Logique :
-     -  Si l’heure actuelle dépasse l’échéance alors on programme la suivante
-     -  Sinon, on calcule le temps restant
-     -  Ce temps est utilisé pour programmer le réveil RTC
+  -  Si l’heure actuelle dépasse l’échéance alors on programme la suivante
+  -  Sinon, on calcule le temps restant
+  -  Ce temps est utilisé pour programmer le réveil RTC
 
 6. Activation des sources de réveil
  Avant chaque deep sleep :
-     - Le capteur PIR activé
-     - Timer RTC est activé avec la durée restante
+  - Le capteur PIR activé
+  - Timer RTC est activé avec la durée restante
 
 Ainsi, l’ESP32 peut être réveillé :
 
-     - Instantanément par le PIR
-     - Régulièrement par le timer RTC
-     - Sans conflit entre les deux mécanismes
+  - Instantanément par le PIR
+  - Régulièrement par le timer RTC
+  - Sans conflit entre les deux mécanismes
 
 ---
 
