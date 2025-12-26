@@ -73,6 +73,73 @@ esp_deep_sleep_start();
 
 Le loop() n’est jamais exécuté : tout se passe dans setup() à chaque réveil.
 
+---
+
+## Patch 5# 
+**Objectif** 
+
+Ce firmware combine deux mécanismes de réveil pour la TimerCAM :
+     • 	Réveil PIR pour allumer une LED lors d’un mouvement
+     • 	Réveil périodique RTC toutes les 60 secondes
+Le tout avec une fenêtre PIR de 10 minutes limitant le nombre d’activations à 2, et un timer permanent synchronisé pour éviter toute dérive temporelle.
+
+1. Configuration matérielle
+     • 	LED externe sur le pin GPIO4
+     • 	Capteur PIR sur le pin GPIO13 
+     • 	TimerCAM initialisée au démarrage
+     • 	RTC interne utilisé pour mesurer le temps et gérer les fenêtres
+
+2. Gestion du réveil PIR
+Lors d’un réveil par le capteur PIR :
+    • 	Vérification de la fenêtre PIR de 10 minutes :
+    • 	Si première activation ou fenêtre expirée: remise à zéro, déboute une nouvelle   fenêtre
+    • 	Limitation à 2 déclenchements de la LED.
+    • 	La LED s'allumée pendant 10 secondes
+    • 	Sinon la LED est ignorée quand la limite est atteinte
+
+Ce mécanisme évite les déclenchements répétés et stabilise la consommation.
+
+3. Réveil par Timer RTC
+Si le réveil provient du timer interne :
+    • 	Le code affiche simplement :"Reveil par timer permanent"
+Ce réveil n’exécute aucune action fonctionnelle :
+il sert uniquement à maintenir la synchronisation du timer permanent.
+
+4. Premier démarrage
+Lors d’un reset ou du tout premier boot :
+    • 	Initialisation du timer permanent :
+
+    • 	Initialisation de la fenêtre PIR
+    • 	Remise à zéro du compteur PIR
+
+5. Timer RTC permanent 
+Le code utilise une variable RTC persistante :
+
+Elle permet de :
+    • 	Garder une échéance fixe toutes les 60 secondes
+    • 	Recalculer le temps restant avant le prochain réveil
+    • 	Éviter toute dérive, même après plusieurs réveils PIR
+Logique :
+    • 	Si l’heure actuelle dépasse l’échéance alors on programme la suivante
+    • 	Sinon, on calcule le temps restant
+    • 	Ce temps est utilisé pour programmer le réveil RTC
+
+6. Activation des sources de réveil
+Avant chaque deep sleep :
+    • 	Le capteur PIR activé :
+
+    • 	Timer RTC activé avec la durée restante :
+
+Ainsi, l’ESP32 peut être réveillé :
+    • 	Instantanément par le PIR
+    • 	Régulièrement par le timer RTC
+    • 	Sans conflit entre les deux mécanismes
+
+---
+
+
+---    
+
 ## Patch 7#
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée.  
 Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouvement dure au moins 10 secondes, capturer une photo avec la TimerCAM et l’envoyer vers un broker MQTT en morceaux (chunks) encodés en Base64.
@@ -127,7 +194,8 @@ Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouveme
   - Encodage en Base64 pour compatibilité MQTT
   - Transmission séquentielle de tous les chunks
   - Libération de la mémoire caméra
-
+    
+---
 
 ## Patch 8#
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée avec une mise en veille.  
@@ -188,7 +256,7 @@ Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une 
     - Cela permet :
       - Réduction très forte de la consommation énergétique.
       - Réveil automatique dès qu’un nouveau mouvement est détecté.
-
+---
 
 ## Patch 9#
 **Objectif :** Envoi d'une photo MQTT avec flash après détection de mouvement prolongée avec une mise en veille .  
@@ -251,6 +319,8 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
       - Une détection fiable
       - Une transmission réseau efficace
       - Une consommation d’énergie minimale grâce à la veille profonde
+
+---
 
 ## Patch 10# 
 **Objectif :** Détecter un mouvement continu pendant 10 secondes, capturer une photo, l’envoyer en blocs via MQTT, puis remettre la TimerCAM en deep sleep avec double réveil :
@@ -326,6 +396,7 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
    - Régularité avec le niveau de batterie envoyée toutes les 60 s
    - Économie d’énergie maximale
 
+---
 
 ## Patch 11#
 **Objectif** L’objectif est de faire fonctionner la TimerCAM en ultra basse consommation en combinant trois fonctions totalement indépendantes : la prise de photo uniquement lorsqu’un mouvement est validé par le capteur PIR, l’envoi périodique de l’état de la batterie via MQTT, et un mode deep sleep optimisé utilisant deux sources de réveil — le PIR pour les photos et le timer RTC pour les transmissions programmées.
