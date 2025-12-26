@@ -116,9 +116,9 @@ il sert uniquement à maintenir la synchronisation du timer permanent.
 
  Elle permet de :
  
-     - Garder une échéance fixe toutes les 60 secondes
-     - Recalculer le temps restant avant le prochain réveil
-     - Éviter toute dérive, même après plusieurs réveils PIR
+  - Garder une échéance fixe toutes les 60 secondes
+  - Recalculer le temps restant avant le prochain réveil
+  - Éviter toute dérive, même après plusieurs réveils PIR
  
  Logique :
      - Si l’heure actuelle dépasse l’échéance alors on programme la suivante
