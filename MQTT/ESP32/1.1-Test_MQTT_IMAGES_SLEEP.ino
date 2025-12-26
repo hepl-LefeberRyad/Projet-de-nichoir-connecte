@@ -4,8 +4,8 @@
 #include "base64.h"
 
 // ================= WIFI ==================
-#define WIFI_SSID "VOO-2G7LV36"
-#define WIFI_PASSWORD "cpCafHXHaGYGGLsxgf"
+#define WIFI_SSID "WIFI_SSID"
+#define WIFI_PASSWORD "WIFI_PASSWORD"
 
 // ================= MQTT ==================
 #define MQTT_HOST "192.168.0.194"
