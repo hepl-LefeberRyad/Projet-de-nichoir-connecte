@@ -468,12 +468,11 @@ Ce réveil fonctionne même si plusieurs réveils PIR ont eu lieu entre-temps.
    
 Avant de dormir :
 - Timer RTC toujours actif
-- PIR activé uniquement si :
-- Pas de blocage
+- PIR activé uniquement si : Pas de blocage ou si la fenêtre PIR n'est pas saturée.
 - Fenêtre PIR non saturée
 
-Résultat :
+Réveil après dormir si :
 - Réveil instantané sur mouvement valide
-- Batterie envoyée régulièrement
-- Consommation minimale
+- Batterie envoye les données régulièrement
+- Ce qui permet une consommation minimale
 
