@@ -15,8 +15,8 @@ const int SENSOR_PIN = 13;
 #define WINDOW_US (10ULL * 60ULL * 1000000ULL)
 
 // ================= WIFI ==================
-#define WIFI_SSID     "VOO-2G7LV36"
-#define WIFI_PASSWORD "cpCafHXHaGYGGLsxgf"
+#define WIFI_SSID     "SSID_WIFI"
+#define WIFI_PASSWORD "PASSWORD"
 
 // ================= MQTT ==================
 #define MQTT_HOST "192.168.0.194"
