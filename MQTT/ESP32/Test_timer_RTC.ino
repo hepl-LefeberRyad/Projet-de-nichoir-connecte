@@ -8,7 +8,7 @@ const int SENSOR_PIN = 13;    // PIR sur GPIO13
 // 1 minute en microsecondes
 #define PERIOD_US (60ULL * 1000000ULL)
 
-// Variable RTC persistante (ne disparaît pas en deep-sleep)
+// Variable RTC persistante 
 RTC_DATA_ATTR uint64_t next_wakeup = 0;
 
 void setup() {
