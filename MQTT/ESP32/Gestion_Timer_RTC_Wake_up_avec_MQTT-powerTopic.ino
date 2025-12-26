@@ -32,7 +32,7 @@ RTC_DATA_ATTR uint8_t  pir_count = 0;
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
-// ---------- WiFi ----------
+// ============ WiFi ======
 void connectWiFi() {
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {
@@ -40,7 +40,7 @@ void connectWiFi() {
     }
 }
 
-// ---------- MQTT ----------
+// ======= MQTT =====
 void connectMQTT() {
     mqttClient.setServer(MQTT_HOST, MQTT_PORT);
     while (!mqttClient.connected()) {
