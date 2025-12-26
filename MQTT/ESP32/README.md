@@ -115,15 +115,14 @@ il sert uniquement à maintenir la synchronisation du timer permanent.
  Le code utilise une variable RTC persistante :
 
  Elle permet de :
- 
   - Garder une échéance fixe toutes les 60 secondes
   - Recalculer le temps restant avant le prochain réveil
   - Éviter toute dérive, même après plusieurs réveils PIR
  
  Logique :
-     - Si l’heure actuelle dépasse l’échéance alors on programme la suivante
-     - Sinon, on calcule le temps restant
-     - Ce temps est utilisé pour programmer le réveil RTC
+     -  Si l’heure actuelle dépasse l’échéance alors on programme la suivante
+     -  Sinon, on calcule le temps restant
+     -  Ce temps est utilisé pour programmer le réveil RTC
 
 6. Activation des sources de réveil
  Avant chaque deep sleep :
