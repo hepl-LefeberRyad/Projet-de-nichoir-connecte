@@ -107,7 +107,7 @@ il sert uniquement à maintenir la synchronisation du timer permanent.
 
 4. Premier démarrage
  Lors d’un reset ou du tout premier boot :
-     - Initialisation du timer permanent :
+   - Initialisation du timer permanent :
      - Initialisation de la fenêtre PIR
      - Remise à zéro du compteur PIR
 
@@ -115,9 +115,11 @@ il sert uniquement à maintenir la synchronisation du timer permanent.
  Le code utilise une variable RTC persistante :
 
  Elle permet de :
+ 
      - Garder une échéance fixe toutes les 60 secondes
      - Recalculer le temps restant avant le prochain réveil
      - Éviter toute dérive, même après plusieurs réveils PIR
+ 
  Logique :
      - Si l’heure actuelle dépasse l’échéance alors on programme la suivante
      - Sinon, on calcule le temps restant
@@ -125,9 +127,11 @@ il sert uniquement à maintenir la synchronisation du timer permanent.
 
 6. Activation des sources de réveil
  Avant chaque deep sleep :
-     - Le capteur PIR activé :
-     - Timer RTC activé avec la durée restante :
+     - Le capteur PIR activé
+     - Timer RTC est activé avec la durée restante
+
 Ainsi, l’ESP32 peut être réveillé :
+
      - Instantanément par le PIR
      - Régulièrement par le timer RTC
      - Sans conflit entre les deux mécanismes
