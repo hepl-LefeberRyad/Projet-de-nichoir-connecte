@@ -51,4 +51,24 @@ Il inclut la configuration de la base de données MariaDB, la création de table
   - Gestion de la mémoire pour supprimer les chunks après assemblage.  
   - Logs détaillés pour suivre la réception et le traitement des images.
 
----
+--- 
+## Patch #10
+**Objectif :** Gestion des images envoyées en plusieurs morceaux (chunking) et ajout de la réception des informations de batterie via MQTT.
+
+### Nouveautés
+- **Gestion du topic batterie (`battery`)**
+  - Prise en charge des messages MQTT envoyés par l'ESP32 contenant l’état de la batterie.
+  - Format attendu : `"LEVEL,VOLTAGE"` (exemple : `"85,3700"`).
+  - Extraction automatique de :
+    - `battery_level` : niveau de batterie en pourcentage.
+    - `battery_voltage` : tension en millivolts.
+  - Affichage des informations dans les logs avec horodatage.
+  - Gestion des erreurs pour les messages mal formés ou inattendus.
+
+- **Adaptation des callbacks MQTT**
+  - Les callbacks gèrent désormais simultanément :
+    - Le topic images (`pics`) avec réception chunkée.
+    - Le topic batterie (`battery`) sans perturber le traitement des images.
+
+- **Suivi temps réel de l’état énergétique**
+  - Permet de suivre l’état de la batterie de l’ESP32 via MQTT en parallèle de la réception et de la sauvegarde des images.
