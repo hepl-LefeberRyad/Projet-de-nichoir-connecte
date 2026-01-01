@@ -6,7 +6,7 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 
 ---
 
-## Patch #1
+## Patch hepl-SousaJoao-patch-1#
 **Objectif :** Test simple du capteur BS-612 qui contrôle l'état d'une led.  
 
 - Configuration des pins du matérielle
@@ -26,7 +26,7 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 
 
 
-## Patch #2
+## Patch hepl-SousaJoao-patch-2#
 **Objectif :** Détecter un mouvement avec le capteur PIR BS-612 et allumer la led uniquement si le mouvement dure au moins 5 secondes.  
 
 - Configuration des pins du matérielle
@@ -49,7 +49,7 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 
          
 
-## Patch #3
+## Patch hepl-SousaJoao-patch-3#
 **Objectif :** Réveil du microcôntroleur grâce au capteur PIR BS-612.  
 
 - Configuration des pins du matérielle
@@ -74,6 +74,7 @@ Ce code est écrit sur l'environnement Arduino IDE et permet la configuration de
 - Utilisation du compteur / temporisation
   - vTaskDelay(pdMS_TO_TICKS(10000)) = pause non bloquante pendant 10 secondes avant de lancer la veille
   - Permet d’avoir un délai avant la mise en veille tout en restant compatible avec le multitâche
+
 
 
 
