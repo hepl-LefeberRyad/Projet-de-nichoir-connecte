@@ -6,7 +6,7 @@ Les codes sont dévelloppés sur l'environnement Arduino IDE et incluent la gest
 L'échange de données s'effectue sur le réseau local, via l'adresse IP du broker MQTT.
 
 ---
-## Patch 4#  
+## Patch hepl-SousaJoao-patch-4#  
 
 **Objectif** 
 Ce code met en place un système de double réveil pour la TimerCAM :
@@ -75,7 +75,7 @@ Le loop() n’est jamais exécuté : tout se passe dans setup() à chaque révei
 
 ---
 
-## Patch 5# 
+## Patch hepl-SousaJoao-patch-5# 
 **Objectif** 
 
 Ce firmware combine deux mécanismes de réveil pour la TimerCAM :
@@ -137,7 +137,7 @@ Ainsi, l’ESP32 peut être réveillé :
 
 ---
 
-## Patch 6#  
+## Patch hepl-SousaJoao-patch-6#  
 **Objectif** 
 Gestion PIR limitée, envoi batterie MQTT et timer RTC synchronisé.
 Ce code met en ouvre un fonctionnement basse consommation combinant trois mécanismes indépendants:
@@ -189,7 +189,7 @@ L’ESP32 peut ainsi être réveillé soit par un mouvement, soit par le timer p
 
 ---    
 
-## Patch 7#
+## Patch hepl-SousaJoao-patch-7#
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée.  
 Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouvement dure au moins 10 secondes, capturer une photo avec la TimerCAM et l’envoyer vers un broker MQTT en morceaux (chunks) encodés en Base64.
 
@@ -246,7 +246,7 @@ Le but est de détecter un mouvement via un capteur PIR, attendre que ce mouveme
     
 ---
 
-## Patch 8#
+## Patch hepl-SousaJoao-patch-8#
 **Objectif :** Envoi d'une photo MQTT après détection de mouvement prolongée avec une mise en veille.  
 Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une photo via MQTT, puis repasser l’ESP32 TimerCAM en mode veille profonde avec réveil par le capteur PIR.
 
@@ -307,7 +307,7 @@ Détecter un mouvement continu durant 10 secondes, activer le WiFi, envoyer une 
       - Réveil automatique dès qu’un nouveau mouvement est détecté.
 ---
 
-## Patch 9#
+## Patch hepl-SousaJoaopatch-9#
 **Objectif :** Envoi d'une photo MQTT avec flash après détection de mouvement prolongée avec une mise en veille .  
 Détecter un mouvement continu durant 10 secondes, signaler la prise de photo via une LED externe, envoyer l’image en plusieurs blocs sur MQTT, puis repasser l’ESP32 TimerCAM en mode veille profonde avec réveil via le PIR.
 
@@ -371,7 +371,7 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
 
 ---
 
-## Patch 10# 
+## Patch hepl-SousaJoaopatch-10# 
 **Objectif :** Détecter un mouvement continu pendant 10 secondes, capturer une photo, l’envoyer en blocs via MQTT, puis remettre la TimerCAM en deep sleep avec double réveil :
    - Par capteur PIR (EXT0) pour prendre les photos
    - Par timer RTC pour l’envoi périodique du niveau de batterie.
@@ -447,7 +447,7 @@ Détecter un mouvement continu durant 10 secondes, signaler la prise de photo vi
 
 ---
 
-## Patch 11#
+## Patch hepl-SousaJoaopatch-11#
 **Objectif** L’objectif est de faire fonctionner la TimerCAM en ultra basse consommation en combinant trois fonctions totalement indépendantes : la prise de photo uniquement lorsqu’un mouvement est validé par le capteur PIR, l’envoi périodique de l’état de la batterie via MQTT, et un mode deep sleep optimisé utilisant deux sources de réveil — le PIR pour les photos et le timer RTC pour les transmissions programmées.
 
 1. Matériel et configuration
@@ -524,4 +524,89 @@ Réveil après dormir si :
 - Réveil instantané sur mouvement valide
 - Batterie envoye les données régulièrement
 - Ce qui permet une consommation minimale
+
+---
+
+## Patch hepl-SousaJoaopatch-12#
+
+**Objectif** Faire fonctionner la TimerCAM en ultra basse consommation : capture photo uniquement sur mouvement validé par le PIR, envoi périodique de la batterie via MQTT, et deep sleep optimisé avec GPIO33 pour alimentation de la caméra, capteur PIR et les timers RTC.
+
+1. Matériel et configuration
+
+   
+- Capteur PIR sur le pin GPIO13 (EXT0)
+- LED externe sur le pin GPIO4
+- Initialisation du  GPIO33 poour commuter la batterie
+- Initialisation de la TimerCAM
+- Initialisation du Wi-Fi
+- Initialisation de la communication par MQTT 
+- GPIO 33 est mis sur HIGH en permanence
+
+2. Réveil par détection d'un mouvement par le capteur PIR  
+ Au réveil par le PIR :
+
+ - Vérification du contexte s'il n'y a pas de blocage ou si la fenêtre PIR active
+ - Validation du mouvement :
+  - Observation du PIR pendant 10 s
+  - Le signal doit rester majoritairement HIGH
+  - Sinon: retour en deep sleep
+ - Limitation : 2 photos maximum par fenêtre de 12h  
+  - window_start = début de fenêtre
+  - pir_count = nombre de photos prises
+
+3. Capture & envoi photo
+   
+Si le mouvement est validé :
+- Initialisation caméra
+  - Capture d'une image + envois de la topic de la batterie
+  - Découpage en blocs de 4095 octets
+  - Encodage Base64
+  - Envoi MQTT des chunks de la photo
+  - Message final : "Photo taken"
+  - Libération mémoire avec coupure Wi-Fi
+- Activation d’un blocage PIR de 5 minutes
+
+4. Blocage PIR
+   
+Après chaque photo :
+- Le PIR est ignoré pendant 5 minutes
+- Le timer RTC gère automatiquement la fin du blocage
+- Objectif : éviter les rafales et réduire la consommation
+
+5. Batterie réveil par TIMER
+   
+Un réveil RTC indépendant envoie la batterie toutes les 24 h :
+- Lecture tension + le pourcentage de la batterie
+- Publication MQTT sur battery
+- Coupure Wi-Fi
+- Retour en deep sleep
+Ce réveil fonctionne même si plusieurs réveils PIR ont eu lieu entre-temps.
+
+6. Gestion des timers RTC
+   
+- Timer batterie :
+- Stocké en RTC
+- Toujours aligné sur un multiple exact de 24 h
+- Fenêtre PIR :
+- Durée : 12 h
+- À expiration alors pir_count = 0
+- Avant chaque deep sleep :
+- Calcul du prochain événement :
+- Envoi batterie
+- Fin blocage capteur PIR
+- Fin fenêtre capteur PIR
+- Le plus proche détermine la durée du sommeil
+
+7. Mise en veille
+   
+Avant de dormir :
+- Timer RTC toujours actif
+- PIR activé uniquement si : Pas de blocage ou si la fenêtre PIR n'est pas saturée.
+- Fenêtre PIR non saturée
+
+Réveil après dormir si :
+- Réveil instantané sur mouvement valide
+- Batterie envoye les données régulièrement
+- Ce qui permet une consommation minimale
+
 
