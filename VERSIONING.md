@@ -137,3 +137,6 @@ Dans ce README, nous rassemblons l’ensemble des différents patchs appliqués 
 - **Suivi temps réel de l’état énergétique**
   - Permet de suivre l’état de la batterie de l’ESP32 via MQTT en parallèle de la réception et de la sauvegarde des images.
 --- 
+
+## Patchs effectuer par Joao
+---
