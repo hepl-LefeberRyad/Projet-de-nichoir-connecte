@@ -1,3 +1,9 @@
+# Database
+
+## Introduction
+Ce dossier contient le code et les scripts relatifs à la gestion des données du projet SmartCitiesIoT – Nichoir.  
+Il inclut la configuration de la base de données MariaDB, la création de tables pour stocker les messages et les images envoyés par l'ESP32 via MQTT, ainsi que les scripts Python pour insérer et récupérer ces données.
+
 ---
 
 ## Patch #1
